@@ -1,13 +1,9 @@
 '''
 TODO:
-Add additional processing of sender and send time
-Change save file to .csv type with clolumns = ['message', 'sender', 'time']
-
-def save_to_csv(data, filename):
-    with open(filename, 'w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(['message', 'sender', 'time'])
-        writer.writerows(data)
+make chats function working mama
+add logic to check if num_of_messages == 1001 delete last add new
+add translation logic
+add summarization
         
 '''
 
