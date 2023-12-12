@@ -1,7 +1,6 @@
 '''
 TODO:
 make chats function working mama
-add logic to check if num_of_messages == 1001 delete last add new
 add translation logic
 add summarization
         
