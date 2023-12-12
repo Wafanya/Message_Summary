@@ -9,15 +9,25 @@ add summarization
 
 
 import csv
+import pandas as pd
 from telegram import Update
 from telegram.ext import Updater, MessageHandler, Filters, CommandHandler, CallbackContextr
 
 # Function to save data to a CSV file
 def save_to_csv(data, filename):
-    with open(filename, 'w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(['message', 'sender', 'time'])
-        writer.writerows(data)
+    # Load the existing data
+    if os.path.exists(filename):
+        df = pd.read_csv(filename)
+        df.loc[len(df)] = data[0]  # Add the new row at the end
+    else:
+        df = pd.DataFrame(data, columns=['message', 'sender', 'time'])
+
+    # If there are more than 1000 rows, remove the oldest ones
+    if len(df) > 1000:
+        df = df.tail(1000)  # Keep only the last 1000 rows
+
+    # Save the data back to the CSV file
+    df.to_csv(filename, index=False)
 
 # Define a function to handle the messages that the bot receives
 def message_handler(update: Update, context: CallbackContext) -> None:
