@@ -36,7 +36,7 @@ def save_to_csv(data, filename):
         df = pd.read_csv(filename)
         df.loc[len(df)] = data[0]  # Add the new row at the end
     else:
-        df = pd.DataFrame(data, columns=['message', 'sender', 'time'])
+        df = pd.DataFrame(data, columns=['message', 'sender', 'time', 'reply_to'])
 
     # If there are more than 1000 rows, remove the oldest ones
     if len(df) > 1000:
