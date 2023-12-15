@@ -51,8 +51,12 @@ def message_handler(update: Update, context: CallbackContext) -> None:
     # Get the sender and the send time
     sender = message.from_user.username
     send_time = message.date
-    # Save the message, sender, and send time to a CSV file named after the chat id
-    data = [[message.text, sender, send_time]]
+    # Check if the message is a reply to another message
+    reply_to = ""
+    if message.reply_to_message:
+        reply_to = message.reply_to_message.from_user.username
+    # Save the message, sender, send time, and reply_to to a CSV file named after the chat id
+    data = [[message.text, sender, send_time, reply_to]]
     save_to_csv(data, f'{chat_id}.csv')
 
 def chats(update: Update, context: CallbackContext) -> None:
