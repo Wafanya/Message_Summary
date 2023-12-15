@@ -15,6 +15,9 @@ from telegram.ext import Updater, MessageHandler, Filters, CommandHandler, Callb
 from langdetect import detect
 from googletrans import Translator
 
+# Load model directly
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+
 def translate_text(text):
     try:
         lang = detect(text)
@@ -75,6 +78,13 @@ def chats(update: Update, context: CallbackContext) -> None:
 
     # Send the list of chat ids to the user
     context.bot.send_message(chat_id=user_id, text=f"You are in these chats: {chat_ids}")
+
+def summarize_text(text):
+    tokenizer = AutoTokenizer.from_pretrained("Falconsai/text_summarization")
+    model = AutoModelForSeq2SeqLM.from_pretrained("Falconsai/text_summarization")
+    summary = pipeline('summarization', model=model, tokenizer=tokenizer)
+
+    return summary
 
 
 
