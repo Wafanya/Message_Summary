@@ -12,6 +12,20 @@ import pandas as pd
 from telegram import Update
 from telegram.ext import Updater, MessageHandler, Filters, CommandHandler, CallbackContextr
 
+from langdetect import detect
+from googletrans import Translator
+
+def translate_text(text):
+    try:
+        lang = detect(text)
+        if lang == 'en':
+            return text
+        else:
+            translator = Translator()
+            return translator.translate(text, dest='en').text
+    except:
+        return text
+
 # Function to save data to a CSV file
 def save_to_csv(data, filename):
     # Load the existing data
