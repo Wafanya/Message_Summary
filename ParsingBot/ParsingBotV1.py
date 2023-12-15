@@ -83,23 +83,16 @@ def chats(update: Update, context: CallbackContext) -> None:
 
 def preprocess_csv(csv_file_path):
     # Read the CSV file into a DataFrame
-    df = pl.read_csv(csv_file_path)
-
-    # Check if there is a reply to the message
-    df = df.with_column(
-        pl.col("is_reply_to"),
-        df["reply_to"].str().trim().length() == 0
-    )
-
+    df = pd.read_csv(csv_file_path)
+    
+    # Check if there is reply to message
+    df['is_reply_to'] = df['reply_to'].str.strip().str.len() == 0
+    
     # Concatenate text by row
-    df = df.with_column(
-        pl.col("ConcatText"),
-        df["sender"] + ": " + df["message"] + " Replied to: " * df["is_reply_to"] + df["reply_to"]
-    )
-
+    df['ConcatText'] = df.apply(lambda row: row['sender'] + ": " + row['message'] + (" Replied to: " + row['reply_to'] if row['is_reply_to'] else ""), axis=1)
     # Concatenate all text from the column
-    concatenated_text = df["ConcatText"].agg_list().agg(lambda s: " ".join(s)).get(0)
-
+    concatenated_text = df['ConcatText'].str.cat(sep=' ')
+    
     return concatenated_text
 
 def summarize_text(text):
