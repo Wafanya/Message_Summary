@@ -18,6 +18,8 @@ from googletrans import Translator
 # Load model directly
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
+import polars as pl
+
 def translate_text(text):
     try:
         lang = detect(text)
@@ -78,6 +80,27 @@ def chats(update: Update, context: CallbackContext) -> None:
 
     # Send the list of chat ids to the user
     context.bot.send_message(chat_id=user_id, text=f"You are in these chats: {chat_ids}")
+
+def preprocess_csv(csv_file_path):
+    # Read the CSV file into a DataFrame
+    df = pl.read_csv(csv_file_path)
+
+    # Check if there is a reply to the message
+    df = df.with_column(
+        pl.col("is_reply_to"),
+        df["reply_to"].str().trim().length() == 0
+    )
+
+    # Concatenate text by row
+    df = df.with_column(
+        pl.col("ConcatText"),
+        df["sender"] + ": " + df["message"] + " Replied to: " * df["is_reply_to"] + df["reply_to"]
+    )
+
+    # Concatenate all text from the column
+    concatenated_text = df["ConcatText"].agg_list().agg(lambda s: " ".join(s)).get(0)
+
+    return concatenated_text
 
 def summarize_text(text):
     tokenizer = AutoTokenizer.from_pretrained("Falconsai/text_summarization")
