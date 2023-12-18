@@ -83,7 +83,7 @@ def chats(update: Update, context: CallbackContext) -> None:
 def preprocess_csv(csv_file_path):
     # Read the CSV file into a DataFrame
     df = pd.read_csv(csv_file_path)
-    
+    df['message'] = df['message].apply(translate_text)
     # Check if there is reply to message
     df['is_reply_to'] = df['reply_to'].str.strip().str.len() == 0
     
