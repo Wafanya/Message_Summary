@@ -9,6 +9,7 @@ add summarization
 
 import csv
 import pandas as pd
+import os
 from telegram import Update
 from telegram.ext import Updater, MessageHandler, Filters, CommandHandler, CallbackContextr
 
@@ -16,18 +17,16 @@ from langdetect import detect
 from googletrans import Translator
 
 # Load model directly
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 
-import polars as pl
-
-def translate_text(text):
+def translate_text(text, dest='en'):
     try:
         lang = detect(text)
         if lang == 'en':
             return text
         else:
             translator = Translator()
-            return translator.translate(text, dest='en').text
+            return translator.translate(text, dest=dest).text
     except:
         return text
 
@@ -100,7 +99,7 @@ def summarize_text(text):
     model = AutoModelForSeq2SeqLM.from_pretrained("Falconsai/text_summarization")
     summary = pipeline('summarization', model=model, tokenizer=tokenizer)
 
-    return summary
+    return summary(text, max_length=250, min_length=30, do_sample=False)
 
 
 
