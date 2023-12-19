@@ -1,11 +1,10 @@
 from telegram import Update
 from telegram.ext import CallbackContext
 from googletrans import Translator
-from typing import Literal
 from utils import save_to_csv
 
 # Define a function to translate text using googletrans
-def translate_text(text: str, dest=Literal['en', 'uk']) -> str:
+def translate_text(text: str, dest='en') -> str:
     try:
         translator = Translator()
         return translator.translate(text, dest=dest).text

@@ -1,8 +1,13 @@
 import pandas as pd
 
+from handlers import translate_text
+
 def preprocess_csv(csv_file_path: str) -> str:
     # Read the CSV file into a DataFrame
     df = pd.read_csv(csv_file_path)
+
+    # Translate every row to english
+    df['message'] = df['message'].apply(translate_text)
     
     # Check if there is reply to message
     df['is_reply_to'] = df['reply_to'].str.strip().str.len() == 0
