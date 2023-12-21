@@ -1,6 +1,15 @@
 import pandas as pd
 
-from handlers import translate_text
+from googletrans import Translator
+
+
+def translate_text(text: str, dest='en') -> str:
+    try:
+        translator = Translator()
+        return translator.translate(text, dest=dest).text
+    except:
+        return text
+    
 
 def preprocess_csv(csv_file_path: str) -> str:
     # Read the CSV file into a DataFrame
